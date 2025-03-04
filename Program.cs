@@ -24,13 +24,6 @@ class MyClass
         return Activator.CreateInstance(testclass, new object[] { i, s, d, c }) as TestClass;
     }
 
-    //TestClass, test2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-    //:TestClass
-
-    //|I:1
-    //|S:STR
-    //|D:2.0
-    //|
     static object StringToObject(string s)
     {
         string[] strArr1 = s.Split('|');
@@ -64,6 +57,8 @@ class MyClass
         }
         return obj;
     }
+
+
     static string ObjectToString(object o)
     {
         Type type = o.GetType();
