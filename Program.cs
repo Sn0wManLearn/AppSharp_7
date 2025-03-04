@@ -24,11 +24,45 @@ class MyClass
         return Activator.CreateInstance(testclass, new object[] { i, s, d, c }) as TestClass;
     }
 
+    //TestClass, test2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+    //:TestClass
+
+    //|I:1
+    //|S:STR
+    //|D:2.0
+    //|
     static object StringToObject(string s)
     {
-        string[] strArr = s.Split('|');
-        string[] strA = strArr[0].Split(':');
-        object obg = Activator.CreateInstance(null, strA[1])?.Unwrap();
+        string[] strArr1 = s.Split('|');
+        string[] strArr2 = strArr1[0].Split(':');
+        object obj = Activator.CreateInstance(null, strArr1[0].Split(',')[0])?.Unwrap();
+        if (strArr1.Length > 1 && obj != null)
+        {
+            var type = obj.GetType();
+            for (int i = 1; i < strArr1.Length; i++)
+            {
+                string[] nameAndValue = strArr1[i].Split(":");
+                var prop = type.GetProperty(nameAndValue[0]);
+                if (prop == null) continue;
+                if (prop.PropertyType == typeof(int))
+                {
+                    prop.SetValue(obj, int.Parse(nameAndValue[1]));
+                }
+                else if (prop.PropertyType == typeof(string))
+                {
+                    prop.SetValue(obj, nameAndValue[1]);
+                }
+                else if (prop.PropertyType == typeof(decimal))
+                {
+                    prop.SetValue(obj, decimal.Parse(nameAndValue[1]));
+                }
+                else if (prop.PropertyType == typeof(char[]))
+                {
+                    prop.SetValue(obj, nameAndValue[1].ToCharArray());
+                }
+            }
+        }
+        return obj;
     }
     static string ObjectToString(object o)
     {
@@ -57,5 +91,14 @@ class MyClass
     {
         char[] chars = { 'a', 'b', 'c' };
         var obj1 = MakeTestclass(1, "str", 1.5M, chars);
+
+        string str = ObjectToString(obj1);
+
+        Console.WriteLine(str);
+        Console.WriteLine();
+
+        var obj2 = StringToObject(str);
+
+        Console.WriteLine(ObjectToString(obj2));
     }
 }
