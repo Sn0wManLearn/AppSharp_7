@@ -6,22 +6,17 @@ using System.Threading.Tasks;
 
 namespace AppSharp_7
 {
+    [AttributeUsage(AttributeTargets.Field)]
     internal class SaveFieldAttribute: Attribute
     {
-        public int FieldI {  get; }
-        public string? FieldS { get; }
-        public decimal FieldD { get; }
-        public char[]? FieldC { get; }
+        public string Name { get; private set; }
         public SaveFieldAttribute()
         {
             
-        }
-        public SaveFieldAttribute(int i, string s, decimal d, char[] c)
+        }        
+        public SaveFieldAttribute(string customFieldName)
         {
-            FieldI = i;
-            FieldS = s;
-            FieldD = d;
-            FieldC = c;
+           Name = customFieldName;
         }
     }
 }

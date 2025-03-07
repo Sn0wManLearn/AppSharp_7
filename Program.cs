@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 
@@ -27,8 +28,9 @@ class MyClass
     static object StringToObject(string s)
     {
         string[] strArr1 = s.Split('|');
-        string[] strArr2 = strArr1[0].Split(':');
+
         object obj = Activator.CreateInstance(null, strArr1[0].Split(',')[0])?.Unwrap();
+
         if (strArr1.Length > 1 && obj != null)
         {
             var type = obj.GetType();
@@ -58,10 +60,10 @@ class MyClass
         return obj;
     }
 
-
     static string ObjectToString(object o)
     {
         Type type = o.GetType();
+
         StringBuilder result = new StringBuilder();
         result.Append(type.AssemblyQualifiedName + ":");
         result.Append(type.Name + '|');
@@ -78,6 +80,18 @@ class MyClass
             {
                 result.Append(tmp);
                 result.Append('|');
+            }
+        }
+
+        var fields = type.GetFields();
+        foreach (var field in fields)
+        {
+            var attribute = field.GetCustomAttribute<SaveFieldAttribute>();
+            if (attribute != null)
+            {
+                result.Append(attribute.Name + ":");
+                var fieldVal = field.GetValue(o);
+                result.Append(fieldVal + "\n");
             }
         }
         return result.ToString();

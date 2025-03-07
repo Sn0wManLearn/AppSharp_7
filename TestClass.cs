@@ -13,6 +13,8 @@ namespace AppSharp_7
         public decimal D { get; set; }
         public char[]? C { get; set; }
 
+        [SaveField("CustomFieldName")]
+        public string someName = "This is field with string";
         public TestClass()
         { }
         private TestClass(int i)
